@@ -41,9 +41,16 @@ def plus_minus(data):
 print(plus_minus([10, 20, 30, 40, 50, 60]))
 
 
-#TODO 9.3 last part
+def myzip(data1, data2):
+    result = []
+
+    for value in range(len(data1)):
+        result.append((data1[value], data2[value]))
+
+    return result
 
 
+print(myzip([10, 20, 30], 'abc'))
 
 
 
