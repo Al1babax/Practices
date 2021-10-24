@@ -1,8 +1,10 @@
 from operator import itemgetter
+
 PEOPLE = [{'first': 'Reuven', 'last': 'Lerner', 'email': 'reuven@lerner.co.il'},
           {'first': 'Donald', 'last': 'Trump', 'email': 'president@whitehouse.gov'},
           {'first': 'Vladimir', 'last': 'Putin', 'email': 'president@kremvax.ru'}
           ]
+
 
 def alphabetize_names(data):
     """
@@ -31,5 +33,15 @@ a = [-5, 7, -3, 4, -1, -6, 2]
 # sort_by_absolute_value(a)
 
 
+rand_list = [[2, 4, 5, 6], [3, 5, 6, 7, 4, 3], [], [5, 4], [7, 5, 4, 34, 23, 2]]
+
+
+def list_sort_by_sum(data):
+    result = sorted(data, key=sum)
+    print(result)
+
+
+
+list_sort_by_sum(rand_list)
 
 
