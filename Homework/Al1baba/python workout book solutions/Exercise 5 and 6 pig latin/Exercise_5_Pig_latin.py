@@ -14,7 +14,7 @@ add2 = "ay"
 
 
 def get_a_word():
-    word = input("Input a word you'd like to translate into Exercise 6 pig latin: ")
+    word = input("Input a word you'd like to translate into Exercise 5 and 6 pig latin: ")
     return word
 
 

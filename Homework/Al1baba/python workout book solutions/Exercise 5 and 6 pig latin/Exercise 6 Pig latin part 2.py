@@ -32,7 +32,7 @@ def opening_files():
         make_secret_file(data, data2)
 
 
-# opening_files()        #This will translate the random.txt with Exercise 6 pig latin to secrettext.txt file
+# opening_files()        #This will translate the random.txt with Exercise 5 and 6 pig latin to secrettext.txt file
 
 
 
