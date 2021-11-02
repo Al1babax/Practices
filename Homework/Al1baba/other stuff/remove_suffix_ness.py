@@ -1,4 +1,3 @@
-
 """
 parameter word: str of word to remove suffix from.
 return: str of word with suffix removed & spelling adjusted.
@@ -18,17 +17,17 @@ assumption is that the word is a legit english word
 """
 
 
-def remove_suffix_ness(word : str) -> str:
+def remove_suffix_ness(word: str) -> str:
     try:
-     if "ness" in word:
-         word = word.replace("ness", "")
+        if "ness" in word:
+            word = word.replace("ness", "")
 
-         if word[-1] == "i":
-             word = word.replace("i", "y")
-             print(word)
+            if word[-1] == "i":
+                word = word.replace("i", "y")
+                print(word)
 
-         else:
-             print(word)
+            else:
+                print(word)
     except IndexError:
         print("ERROR (@function remove_suffix_ness): Function cannot process that word")
 
