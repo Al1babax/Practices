@@ -16,7 +16,7 @@ class Currency:
             amount = int(amount)
             if amount <= self.chips:
                 self.chips -= amount
-                print("Your bet is successful!")
+                # print("Your bet is successful!")
                 print(f"You bet {amount} chips. You now have {self.chips} chips left")
             else:
                 print("Sorry you do not have enough chips to do that bet")
@@ -25,6 +25,7 @@ class Currency:
         else:
             print("Sorry your input was invalid, try again")
             self.bet()
+        return amount
 
     def add(self, amount):
         self.chips += amount
@@ -55,19 +56,17 @@ class Cards:
     }
     SUITS = ("of clubs", "of diamonds", "of hearts", "of spades")
     # Cannot draw same cards twice, so I have to keep track which cards have been drawn already
-    DRAW_CARDS = []
-    TRASH_CARDS = []
+    drawn_cards = []
     current_card = 0
 
     def card(self):
         self.draw_card()
         card = self.current_card
-        card_number = 0
 
         def check_card_number(card_num, num1):  # Now cards between 11-13 are always 10
             if 11 <= card_num - num1 <= 13:
                 self.card_number = 10
-            elif card_num - num1 == 1:      # ace can be 1 or 11 WARNING ONLY STRING??
+            elif card_num - num1 == 1:  # ace can be 1 or 11 WARNING ONLY STRING??
                 return "1 or 11"
             else:
                 self.card_number = card_num - num1
@@ -85,19 +84,22 @@ class Cards:
     def draw_card(self):
         self.current_card = random.randint(1, 52)
         # Check whether the card is still in draw pile
-        if self.current_card not in self.TRASH_CARDS:
-            self.TRASH_CARDS.append(self.current_card)
+        if self.current_card not in self.drawn_cards:
+            self.drawn_cards.append(self.current_card)
             return self.current_card
-        elif len(self.TRASH_CARDS) >= 52:
+        elif len(self.drawn_cards) >= 52:
             print("Out of cards")  # Draw deck is out of cards to draw #TODO final
         else:
             self.draw_card()
 
+    def reset(self):
+        self.drawn_cards = []
+
 
 class Hand(Cards):
+    player_current_hand = []
 
     def __init__(self):
-        super().__init__()
         self.current_cards = [self.card() for _ in range(2)]
 
     def add_card(self):
@@ -113,27 +115,34 @@ class Hand(Cards):
         pass
 
     def current_hand(self):
-        current_hand = self.current_cards
+        self.player_current_hand = self.current_cards
 
-        return f"|{' | '.join(current_hand)}|"
+        return f"|{' | '.join(self.player_current_hand)}|"
+
+    def reset_hand(self):
+        self.player_current_hand = []
 
     def __str__(self):
         return self.current_hand()
 
 
 class House(Cards):
+    house_current_hand = []
+
     # House cards, second one should be hidden
     def __init__(self):
-        super().__init__()
         self.house_cards = [self.card() for _ in range(2)]
 
     def add_card(self):
         self.house_cards.append(self.card())
 
     def house_hand(self):
-        house_hand = self.house_cards
+        self.house_current_hand = self.house_cards
 
-        return f"|{' | '.join(house_hand)}|"
+        return f"|{' | '.join(self.house_current_hand)}|"
+
+    def reset_hand(self):
+        self.house_current_hand = []
 
     def __str__(self):
         return self.house_hand()
