@@ -1,8 +1,0 @@
-######################################################################
-# CT10A0013 Ohjelmointi Pythonilla
-# Tekijä: Sami Viik
-# Opiskelijanumero: 000679570
-# Päivämäärä: 09.11.2021
-# Yhteistyö ja lähteet, nimi ja yhteistyön muoto: NaN
-# HUOM! KAIKKI KURSSIN TEHTÄVÄT OVAT HENKILÖKOHTAISIA!
-######################################################################
