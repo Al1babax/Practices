@@ -1,0 +1,9 @@
+apina 3
+junamatka 2
+keltainen 3
+kivinaamari 2
+lapio 4
+lippokalastaja 2
+rautanaula 2
+teippirulla 2
+toimitusjohtaja 3
