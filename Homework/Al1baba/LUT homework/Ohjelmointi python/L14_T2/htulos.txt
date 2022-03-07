@@ -1,0 +1,1825 @@
+
+
+A list of data entity roles (v2)
+
+
+
+Roles of Variables Home Page
+
+
+
+Roles of Data Entities
+
+This document contains descriptions of roles of data entities as
+found in novice-level programs.
+
+Note:
+Role lists suitable for novice
+use can be found in the page describing
+how roles can be utilized in teaching.
+
+
+This document describes version 2 of the role set; the old role set
+can be found here. Differences between
+role sets are described here.
+
+Roles in Different Programming Paradigms
+
+The roles listed below apply to data entities in procedural,
+object-oriented, and functional programming. However, data entities
+having roles differ in these paradigms.
+
+
+Procedural programming: Roles apply to variables, and parameters.
+
+
+Object-oriented programming: Roles apply to variables,
+parameters, atttributes, and objects that encapsulate a single
+conceptual attribute.
+
+
+Functional programming: Roles apply to the recursive behavior
+of parameters and return values
+
+Notation Used in the Role List
+
+Procedural examples are given in Pascal, object-oriented examples in
+Java. Procedural examples are whole programs because Pascal provides
+a possibility for short and at the same time complete example programs.
+Object-oriented examples assume the existence of other classes.
+
+
+Notes that are in
+italics describe special cases and can be skipped on first
+reading. Technical definitions and properties provide more exact
+information about the roles, and they are not expected to be used in,
+e.g., teaching programming to novices.
+
+
+Technical definitions may be needed in, e.g., role analysis. They are
+meant for human classifiers who are able to use their understanding
+of a program to capture the data flow through a data entity and identify
+main phases of this flow. For example, a one-way flag may be reset to
+its initial value at the beginning of the main loop (and changed
+within a nested loop) yielding the one-way behavior within the main
+loop even though the flag goes both ways during the entire program
+execution.
+
+
+Properties are descriptions of actual use in novice-level programs or
+consequences of the technical definitions. They can be used in, e.g.,
+devising pictorial representations for roles.
+
+List of Roles
+
+
+Roles can be grouped according to the way they relate to data flow:
+
+
+
+
+
+Fixed value and organizer contain the same data
+throughout the program; only the order of data elements may be
+changed.
+Most-recent holder and stepper record data flow
+sources; either coming from outside or generated internally.
+The net effect of all items in a data flow is represented by a
+one-way flag, most-wanted holder, or gatherer;
+while a manipulation of a single element is recorded in a
+follower or temporary. Data may be stored in a container
+which can be traversed with a walker.
+Finally, a data entity not covered by any of the previous roles is
+considered to have the role other.
+
+
+The roles are described in the following order:
+
+
+ immutable data
+        
+         fixed value
+	 organizer
+        
+ current element of a data flow
+        
+         stepper
+         most-recent holder
+        
+ result of a data flow (so far)
+        
+	 one-way flag
+         most-wanted holder
+         gatherer
+         container
+        
+ result from a single data flow element
+        
+         walker
+         follower
+	 temporary
+        
+ other
+
+
+
+The role images are examples only. In actual use, they should be
+replaced by images better suiting the cultural backgrounds of
+users.
+
+
+
+
+
+
+
+
+Fixed value
+
+
+A data entity whose value does not change after initialization.
+
+
+
+
+Procedural example:
+
+
+The variable fuel is a fixed value in the following
+program:
+
+
+
+centigrade: integer; --
+
+
+readln(centigrade); --
+
+
+
+
+program fuelRate;
+var start, finish: integer;
+    fuel: real;
+begin
+    write('Enter fuel amount: '); readln(fuel);
+    write('Enter odometer at start: '); readln(start);
+    write('Enter odometer at finish: '); readln(finish);
+    while finish &lt;= start do begin
+        write('Odometer cannot be smaller at finish. Re-enter: ');
+        readln(finish)
+    end;
+    writeln('Average rate of fuel consumed was ',
+             fuel / (finish - start) )
+end.
+
+
+
+(All roles in the program:
+start - fixed value |
+finish - most-recent holder |
+fuel - fixed value)
+
+
+
+
+Object-oriented example:
+
+
+The attribute name is a fixed value in the following class:
+
+public class Dog {
+    String name;
+    int age;
+    public Dog (String n) {
+        name = n;
+        age = 0;
+    }
+    public void birthday () {
+        age++;
+    }
+}
+
+
+
+(All roles in the class:
+name - fixed value |
+age - stepper |
+n - fixed value)
+
+
+
+
+Examples of use:
+
+
+ To hold an unchangeable value determined by the user (cf.
+full program example above), or the programmer("MaxLength :=
+8"), in order to be able to use it in expressions or to control
+the flow of execution.
+
+ To hold a reference to a fixed element in a data structure
+(e.g., the head of a linked list).
+
+
+
+
+Notes:
+
+
+ An initialization may include immediate scaling to an internal
+representation, or correction of an input value, e.g.,
+fuel is a fixed value in the following:
+
+
+
+readln(centigrade); --
+ --
+
+
+    write('Enter fuel amount: '); readln(fuel);
+    if fuel &lt; 0 then begin
+        fuel := abs(fuel);
+        writeln('Using ', fuel, ' instead.')
+    end;
+    ...
+
+
+ A fixed value pointer may be set to a null value when the
+item pointed by the pointer ceases to exist.
+
+ There may be several alternative assignments and read
+statements for a fixed value as long as only one of them is executed
+during any execution of the program (e.g., a data entity that is set to
+true if the program is executed during a leap year, and
+false otherwise).
+
+
+
+
+
+
+Technical definition:
+
+
+
+A data entity whose value does not change after initialization (e.g., an
+input value stored in a data entity that is not changed later) possibly
+done in several alternative assignment statements (e.g., a data entity
+that is set to true if the program is executed during a leap
+year, and false otherwise), possibly corrected immediately
+after initialization (e.g., an input value that is replaced by its
+absolute value if it is negative), and possibly set to null if the
+item denoted ceases to exist.
+
+
+
+
+Properties:
+
+
+ Impossible to change after initialization.
+
+ May have two distinct values during its lifetime.
+
+
+
+
+
+
+
+
+
+
+
+Organizer
+
+
+A data structure which is only used for rearranging its elements after
+initialization.
+
+
+
+
+Procedural example:
+
+
+The variable a is an organizer
+in the following program:
+
+
+
+program bubbleSort;
+var i, j, temp: integer;
+    a: array [1..10] of integer;
+begin
+    for i := 1 to 10 do begin
+        write('Enter number: '); readln(a[i]);
+    end;
+    for i := 1 to 9 do
+        for j := i+1 to 10 do
+            if a[i]  a[j] then begin
+                temp := a[i];
+                a[i] := a[j];
+                a[j] := temp
+            end;
+    for i := 1 to 10 do writeln(a[i])
+end.
+
+
+
+(All roles in the program:
+i - stepper |
+j - stepper |
+temp - temporary |
+a - organizer)
+
+
+
+
+Object-oriented example:
+
+
+The attribute characters is an organizer in the following class:
+
+public class ReversableString {
+    private char[] characters;
+    public ReversableString (String s) { characters = s.toCharArray(); }
+    public String get() { return new String(characters); }
+    public void reverse() {
+        int length = characters.length;
+        char tmp;
+        for (int i = 0; i&lt;length/2; i++) {
+            tmp = characters[i];
+            characters[i] = characters[length-i-1];
+            characters[length-i-1] = tmp;
+        }
+    }
+}
+
+
+
+(All roles in the class:
+characters - organizer |
+s - fixed value |
+length - fixed value |
+tmp - temporary |
+i - stepper)
+
+
+
+
+
+Examples of use:
+
+
+ To sort data.
+
+ To shuffle date, e.g., a deck of cards.
+
+
+
+
+Notes:
+
+
+ Occurs usually together with a temporary.
+
+
+
+
+
+
+Technical definition:
+
+
+
+A data structure which is only used for rearranging its elements after
+initialization (e.g., an array used for sorting input values).
+
+
+
+
+Properties:
+
+
+ Individual elements cannot be changed but they can be
+moved around.
+
+
+
+
+
+
+
+
+
+
+
+Stepper
+
+
+A data entity stepping through a succession of values that can be
+predicted as soon as the succession starts.
+
+
+
+
+Procedural example:
+
+
+The variable month is a stepper
+in the following program:
+
+
+
+program monthlySales;
+var month, largest: integer;
+    sales: array [1..12] of integer;
+begin
+    for month := 1 to 12 do begin
+        write('Enter sales of month ', month, ': ');
+        readln(sales[month])
+    end;
+    largest := sales[1];
+    for month := 2 to 12 do
+        if largest &lt; sales[month] then largest := sales[month];
+    for month := 1 to 12 do begin
+        writeln('Month ', month, ' gave ', largest-sales[month],
+                ' less than the best month.')
+    end
+end.
+
+
+
+(All roles in the program:
+month - stepper |
+largest - most-wanted holder |
+sales - fixed value)
+
+
+
+
+Object-oriented example:
+
+
+The attribute age is a stepper in the following class:
+
+public class Dog {
+    String name;
+    int age;      
+    public Dog (String n) {      
+        name = n;
+        age = 0;
+    }
+    public void birthday () {
+        age++;
+    }
+}
+
+
+
+(All roles in the class:
+name - fixed value |
+age - stepper |
+n - fixed value)
+
+
+
+
+
+Examples of use:
+
+
+ To step through the elements of an array
+(cf. full program example above).
+
+ To count the number of inputs or other items, e.g.,
+count in the following:
+
+
+
+    count := 0;
+    while ... do begin
+        count := count + 1;
+        ...
+    end
+
+
+ To divide a data set into smaller and smaller subsets, e.g.,
+size in the following:
+
+
+
+    size := numberOfItems;
+    while size = 1 do begin
+        size := size / 2;
+        ...
+    end
+
+
+ To double the stake on each round of a game --
+stake := 1; ...; stake := 2*stake; ...") --
+
+ To produce an alternation of two values --
+value := 0; ...; value := 5 - value; ...") --
+
+
+
+
+Notes:
+
+
+ The value of a stepper may depend on steppers and their
+followers. E.g., a stepper
+(scanPoint in the following)
+may be used to start with a sparse scan and apply more and more
+dense scans in successive passes:
+
+
+    for density := 10 to 1 do begin
+        scanPoint := density;
+        while scanPoint &lt; areaBorder do begin
+                ...
+                scanPoint := scanPoint + density
+        end
+    end
+
+
+
+
+(In this example, density is also a stepper.)
+
+
+
+
+
+
+
+Technical definition:
+
+
+
+A data entity going through a succession of numeric or enumerated values depending on its own
+previous value and possibly on other steppers, stepper followers, and
+fixed values (e.g., a counter of input values, a data entity that
+doubles its value every time it is updated, a data entity that
+alternates between two values, or an index to an array that sweeps
+through the array using varying densities).
+
+
+
+
+Properties:
+
+
+ Most often the step between successive values is
+constant.
+
+ Future values can usually be predicted if past values are
+known.
+
+ Usually there is a direction for successive values; either
+upwards or downwards.
+
+ The validity of the stepper's value it is usually repeatedly
+tested against the same limit.
+
+
+
+
+
+
+
+
+
+
+
+Most-recent holder
+
+
+A data entity holding the latest value encountered in going through a
+succession of values.
+
+
+
+
+Procedural example:
+
+
+The variable finish is a most-recent holder
+in the following program:
+
+
+
+value: integer; --
+
+repeat --
+readln(value); --
+
+
+
+
+program fuelRate;
+var start, finish: integer;
+    fuel: real;
+begin
+    write('Enter fuel amount: '); readln(fuel);
+    write('Enter odometer at start: '); readln(start);
+    write('Enter odometer at finish: '); readln(finish);
+    while finish &lt;= start do begin
+        write('Odometer cannot be smaller at finish. Re-enter: ');
+        readln(finish)
+    end;
+    writeln('Average rate of fuel consumed was ',
+             fuel / (finish - start) )
+end.
+
+
+
+(All roles in the program:
+start - fixed value |
+finish - most-recent holder |
+fuel - fixed value)
+
+
+
+
+Object-oriented example:
+
+
+The attribute interest is a most-recent holder in the following class:
+
+public class BankAccount {
+    private String accountNumber;
+    private float interest, balance=0;
+    public BankAccount (String nr, float percent) {
+        accountNumber = nr;
+        interest = percent;
+    }
+    public String getAccountNumber  ()        { return accountNumber; }
+    public float  getBalance        ()        { return balance; }
+    public float  getInterest       ()        { return interest; }
+    public void   setInterest (float pc)      { interest = pc; }
+    public void   transaction (float amount)  { balance += amount; }
+}
+
+
+
+(All roles in the class:
+accountNumber - fixed value |
+interest - most-recent holder |
+balance - gatherer |
+nr - fixed value |
+percent - fixed value |
+pc - fixed value |
+amount - fixed value)
+
+
+
+
+Examples of use:
+
+
+ To hold latest input
+(cf. full program example above).
+
+ To hold a copy of an array element last referenced with a
+stepper.
+
+
+
+
+Notes:
+
+
+ The assignment of a new value may include immediate scaling
+to an internal representation, or correction of an input value, e.g.,
+time is a most-recent holder in the following:
+
+
+
+
+readln(centigrade); --
+ --
+
+
+
+
+    while not eof(timesInSeconds) do begin
+        read(timesInSeconds, time);
+        time := time * 1000; (* convert to milliseconds *)
+        ...
+    end
+
+
+
+
+
+
+
+
+Technical definition:
+
+
+
+A data entity holding the latest value encountered in going through a
+succession of values (e.g., the latest input read, a copy of an array
+element last referenced using a stepper, or the latest result of
+a computation made within a loop and used in the entire loop) and possibly corrected
+immediately after obtaining a new value (e.g., to scale into internal
+data representation format).
+
+
+
+
+Properties:
+
+
+ Successive values are obtained from some data succession but
+they have no fixed relationship.
+
+ Each value may consist of two distinct values: the original
+and the scaled/corrected.
+
+
+
+
+
+
+
+
+
+
+
+
+One-way flag
+
+
+A two-valued data entity that cannot get its initial value once its value
+has been changed.
+
+
+
+
+Procedural example:
+
+
+The variable error is a one-way flag
+in the following program:
+
+
+
+program dateValidation;
+    var day, month, year: integer;
+        error: Boolean;
+begin
+    write('Enter day: '); readln(day);
+    error := (day &lt; 1) or (day  31);
+    write('Enter month: '); readln(month);
+    error := error or (month &lt; 1) or (month  12);
+    write('Enter year: '); readln(year);
+    case month of
+        1,3,5,7,8,10,12: (* ok *) ;
+        4,6,9,11: error := error or (day  30); 
+        2: if (year mod 400 = 0) or
+              ((year mod 4 = 0) and (year mod 100 &lt; 0))
+           then error := error or (day  29)
+           else error := error or (day  28)
+    end;
+    if error then writeln('Date incorrect.')
+             else writeln('Date correct.')
+end.
+
+
+
+(All roles in the program:
+day - fixed value |
+month - fixed value |
+year - fixed value |
+error - one-way flag)
+
+
+
+
+Object-oriented example:
+
+
+The attribute frozen is a one-way flag in the following class:
+
+public class Thermometer {
+    private int reading=-999, previous=-999, coldest=9999;
+    private boolean frozen=false;
+    public Thermometer () { }
+    public int  getReading () { return reading; }
+    public void setReading (int r) {
+        if (r &lt; coldest) coldest = r;
+	if (r &lt; 0) frozen = true;
+	previous = reading;
+        reading = r;
+    }
+    public int     getPrevious () {return previous; }
+    public int     getColdest  () {return coldest; }
+    public boolean getFrozen   () {return frozen; }
+}
+
+
+
+(All roles in the class:
+reading - most-recent holder |
+previous - follower |
+coldest - most-wanted holder |
+frozen - one-way flag |
+r - fixed value)
+
+
+
+
+Examples of use:
+
+
+ To register that some event has happened (e.g., end of input
+has been reached) so that illegal operations (e.g., reading after
+end of file) can be avoided.
+
+ To register that some event has happened during a long
+succession of operations
+(cf. full program example above).
+
+
+
+
+Notes:
+
+
+ none
+
+
+
+
+
+
+Technical definition:
+
+
+
+A two-valued data entity that can be effectively
+changed only once (e.g., a data entity stating whether the end of input
+has been encountered) even though the new value may be re-assigned
+several times (e.g., a data entity initialized to false and set
+to true each time an error occurs during a long succession of
+operations).
+
+
+
+
+Properties:
+
+
+ Only two possible values.
+
+ Impossible to regain the initial value once changed.
+
+
+
+
+
+
+
+
+
+
+
+Most-wanted holder
+
+
+A data entity holding the best value encountered so far in going through
+a succession of values.
+
+
+
+
+Procedural example:
+
+
+The variable largest is a most-wanted holder
+in the following program:
+
+
+
+program monthlySales;
+var month, largest: integer;
+    sales: array [1..12] of integer;
+begin
+    for month := 1 to 12 do begin
+        write('Enter sales of month ', month, ': ');
+        readln(sales[month])
+    end;
+    largest := sales[1];
+    for month := 2 to 12 do
+        if largest &lt; sales[month] then largest := sales[month];
+    for month := 1 to 12 do begin
+        writeln('Month ', month, ' gave ', largest-sales[month],
+                ' less than the best month.')
+    end
+end.
+
+
+
+(All roles in the program:
+month - stepper |
+largest - most-wanted holder |
+sales - fixed value)
+
+
+
+
+Object-oriented example:
+
+
+The attribute coldest is a most-wanted holder in the following class:
+
+public class Thermometer {
+    private int reading=-999, previous=-999, coldest=9999;
+    private boolean frozen=false;
+    public Thermometer () { }
+    public int  getReading () { return reading; }
+    public void setReading (int r) {
+        if (r &lt; coldest) coldest = r;
+	if (r &lt; 0) frozen = true;
+	previous = reading;
+        reading = r;
+    }
+    public int     getPrevious () {return previous; }
+    public int     getColdest  () {return coldest; }
+    public boolean getFrozen   () {return frozen; }
+}
+
+
+
+(All roles in the class:
+reading - most-recent holder |
+previous - follower |
+coldest - most-wanted holder |
+frozen - one-way flag |
+r - fixed value)
+
+
+
+
+Examples of use:
+
+
+ To find the most appropriate input as regards to some
+definition of appropriateness (e.g., largest input in the previous
+example).
+
+ To find the index of the array element closest to a given
+target, e.g.,
+closest in the following:
+
+
+    closest := 1;
+    for i := 2 to 100 do
+        if (a[i] - target) &lt; (a[closest] - target) then closest := i
+
+
+
+
+
+Notes:
+
+
+ There are no restrictions on how to measure the goodness of a
+value.
+
+
+
+
+
+
+Technical definition:
+
+
+
+A data entity holding the best value encountered so far in going through
+a succession of values with no restriction on how to measure the
+goodness of a value (e.g., largest input seen so far, or an index to
+the smallest array element processed so far).
+
+
+
+
+Properties:
+
+
+ The current value is better than any previous value.
+
+ Successive values are obtained from some data succession but
+new values are discarded if they are worse than any of those seen
+before.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Gatherer
+
+
+A data entity accumulating the effect of individual values in going
+through a succession of values.
+
+
+
+
+Procedural example:
+
+
+The variable totalSales is a gatherer
+in the following program:
+
+
+
+program sales;
+var month, monthSales, totalSales: integer;
+begin
+    totalSales := 0;
+    for month := 1 to 12 do begin
+        write('Enter sales of month ', month, ': ');
+        readln(monthSales);
+        totalSales := totalSales + monthSales
+    end;
+    writeln('Total sales were ', totalSales)
+end.
+
+
+
+(All roles in the program:
+month - stepper |
+monthSales - most-recent holder |
+totalSales - gatherer)
+
+
+
+
+Object-oriented example:
+
+
+The attribute balance is a gatherer in the following class:
+
+public class BankAccount {
+    private String accountNumber;
+    private float interest, balance=0;
+    public BankAccount (String nr, float percent) {
+        accountNumber = nr;
+        interest = percent;
+    }
+    public String getAccountNumber  ()        { return accountNumber; }
+    public float  getBalance        ()        { return balance; }
+    public float  getInterest       ()        { return interest; }
+    public void   setInterest (float pc)      { interest = pc; }
+    public void   transaction (float amount)  { balance += amount; }
+}
+
+
+
+(All roles in the class:
+accountNumber - fixed value |
+interest - most-recent holder |
+balance - gatherer |
+nr - fixed value |
+percent - fixed value |
+pc - fixed value |
+amount - fixed value)
+
+
+
+
+Examples of use:
+
+
+ To calculate total sum
+(cf. full program example above).
+
+ To keep track of a set when elements may be added and
+removed, e.g., to calculate the number of cards in hand
+(cardsInHand) when several
+cards can be drawn or discarded at a time:
+
+
+
+    cardsInHand := 0;
+    while ... do begin
+        ...
+        if taking_new_cards then begin
+            cardsInHand := cardsInHand + numberOfNewCards
+        end
+        ...
+        if putting_away_cards then begin
+            cardsInHand := cardsInHand - numberOfDiscardedCards
+        end
+        ...
+    end
+
+
+ To accumulate the value of a number from digits, e.g.,
+value in the following:
+
+
+
+    value := 0;
+    read(c);
+    while (c = '0') and (c &lt;= '9') do begin
+        value := value * 10 + ord(c) - ord('0');
+        read(c)
+    end
+
+
+
+
+
+Notes:
+
+
+ Occurs often together with a stepper that counts the number
+of items, e.g., to be able to calculate average.
+
+
+
+
+
+
+
+Technical definition:
+
+
+
+A data entity accumulating the effect of individual values in going
+through a succession of values (e.g., a running total, or the total
+number of cards in hand when the player may draw several cards at a
+time).
+
+
+
+
+Properties:
+
+
+ The new value is obtained by combining some new data with
+the previous value.
+
+
+
+
+
+
+
+
+
+
+
+Container
+
+
+A data structure where elements can be added and removed.
+
+
+
+
+Procedural example:
+
+
+The variable table is a container in the following program:
+
+
+
+program Stack(input,output);
+const SIZE = 10;
+var table: array [1..SIZE] of integer;
+    top, element: integer;
+    command: char;
+begin
+   top := 0;
+   repeat  
+   write('Enter command: '); readln(command);
+   case command of
+      'n': if top &lt; SIZE then begin
+              write('Enter element: '); readln(element);
+              top := top + 1;
+              table[top] := element
+           end;
+      'r': if top  0 then begin
+              writeln(table[top], ' removed.');
+              top := top - 1 
+           end
+   end
+   until command = 'q'
+end.
+
+
+
+(All roles in the program:
+table - container |
+top - walker |
+element - most-recent holder |
+command - most-recent holder)
+
+
+
+
+Object-oriented example:
+
+
+The attribute myStack is a container in the following:
+
+public class Stack {
+   private int contents;
+   private Stack next; 
+   public Stack() { this.next = null; }  
+   public void add (int element) {
+      Stack node;
+      node = new Stack(); 
+      node.contents = element;
+      node.next = this.next;
+      this.next = node;
+   }
+   public int remove () {
+      int removed = 0; 
+      if (this.next != null) { 
+         removed = this.next.contents;
+         this.next = this.next.next;
+      }
+      return removed;
+   }
+}
+class StackTest {
+   Stack myStack = new Stack();
+   ...
+}
+
+
+
+(All roles in the classes:
+contents - fixed value |
+next of the object myStack - most-recent holder |
+next of all other objects - fixed value |
+element - fixed value |
+node - temporary |
+removed - temporary)
+
+
+
+
+Examples of use:
+
+
+ To implement a stack (with an array).
+
+ To implement a binary tree (with a linked structure).
+
+
+
+
+Notes:
+
+
+ The possibility to remove elements is not compulsory.
+
+
+
+
+
+
+Technical definition:
+
+
+
+A data structure where new elements can be added and existing elements possibly changed and removed.
+
+
+
+
+Properties:
+
+
+ Typically the physical implementation of a logical data store.
+
+
+
+
+
+
+
+
+
+
+
+Walker
+
+
+A data entity that traverses a data structure.
+
+
+
+
+Procedural example:
+
+
+The variable p is a walker in the following program:
+
+
+
+program List(input,output);
+type nodePtr = ^node;
+     node = record contents: integer; link: nodePtr end;
+var head, p, t: nodePtr;
+    element: integer;
+    command: char;
+begin
+   new(head);
+   head^.link := nil;
+   repeat
+   write('Enter command: '); readln(command);
+   case command of
+      'n': begin
+              write('Enter element: '); readln(element);
+              p := head;
+              while p^.link &lt; nil do p := p^.link;
+              new(t); t^.contents := element; t^.link :=nil;
+              p^.link := t;
+           end;
+      'p': begin
+              p := head^.link;
+              while p &lt; nil do begin
+                 writeln(p^.contents);
+                 p := p^.link
+              end
+           end
+   end
+   until command = 'q'
+end.
+
+
+
+(All roles in the program:
+contents - fixed value |
+link - fixed value |
+head - fixed value |
+p - walker |
+element - most-recent holder |
+command - most-recent holder)
+
+
+
+
+Object-oriented example:
+
+
+The variable p is a walker in the following class:
+
+public class Stack {
+   private int contents;
+   private Stack next;
+   public Stack() { this.next = null; }
+   public void add (int element) { ... }
+   public int remove () { ... }
+   public int size () {
+      int size = 0;
+      Stack p = this.next;
+      while (p != null) {
+         size++;
+         p = p.next;
+      }
+      return size;
+   }
+}
+
+
+
+(All roles in the method size:
+size - stepper |
+p - walker)
+
+
+
+
+Examples of use:
+
+
+ To keep track of the current element in post-order tree traversal.
+
+ To traverse an ordered linked list to find the position where a new
+element should be added.
+
+ To store the search index in a binary search.
+
+
+
+
+Notes:
+
+
+ A walker is usually a pointer but it may be also a numeric index to an array.
+A numeric walker with very predictable value sequence (e.g., the head index of
+a circular queue in an array) may be considered to be a stepper, also.
+
+
+
+
+
+
+Technical definition:
+
+
+
+A data entity that traverses a data structure in some systematic way.
+The traversal may cover only part of the data structure.
+The traversal order may be related either to the structure of the
+(logical) data structure or to the structure of the (physical)
+container implementing that (logical) data structure.
+
+
+
+
+Properties:
+
+
+ Connected to some container.
+ Traverses through a systematic path within a container (or logical
+        data structure).
+
+
+
+
+
+
+
+
+
+
+
+Follower
+
+
+A data entity that gets its values by following another data entity.
+
+
+
+
+Procedural example:
+
+
+The variable previous is a follower
+in the following program:
+
+
+
+
+
+first, p: ptr;      --
+
+
+
+
+ 0 do begin       --
+
+first := p;  --
+
+
+
+
+
+program distance;
+var month, current, previous, largestDifference: integer;
+begin
+    write('Enter 1. value: '); readln(previous);
+    write('Enter 2. value: '); readln(current);
+    largestDifference := current - previous;
+    for month := 3 to 12 do begin
+        previous := current;
+        write('Enter ', month, '. value: '); readln(current);
+        if current - previous  largestDifference
+            then largestDifference := current - previous
+    end;
+    writeln('Largest difference was ', largestDifference)
+end.
+
+
+
+(All roles in the program:
+month - stepper |
+current - most-recent holder |
+previous - follower |
+largestDifference - most-wanted holder)
+
+
+
+
+Object-oriented example:
+
+
+The attribute previous is a follower in the following class:
+
+public class Thermometer {
+    private int reading=-999, previous=-999, coldest=9999;
+    private boolean frozen=false;
+    public Thermometer () { }
+    public int  getReading () { return reading; }
+    public void setReading (int r) {
+        if (r &lt; coldest) coldest = r;
+	if (r &lt; 0) frozen = true;
+	previous = reading;
+        reading = r;
+    }
+    public int     getPrevious () {return previous; }
+    public int     getColdest  () {return coldest; }
+    public boolean getFrozen   () {return frozen; }
+}
+
+
+
+(All roles in the class:
+reading - most-recent holder |
+previous - follower |
+coldest - most-wanted holder |
+frozen - one-way flag |
+r - fixed value)
+
+
+
+
+
+Examples of use:
+
+
+ The previous pointer when going through a linked list.
+
+ The low index in a binary search.
+
+
+
+
+Notes:
+
+
+ A follower may be off by a constant from the data entity it
+follows ("low := middle + 1" in binary search).
+
+
+
+
+
+
+Technical definition:
+
+
+
+A data entity which, apart from initialization, goes through a
+succession of values depending on the value of a single data entity that
+is updated immediately after being used for updating the follower,
+and possibly on fixed values (e.g., the previous pointer when
+going through a linked list, or the low index in a binary
+search).
+
+
+
+
+Properties:
+
+
+ Tightly connected to another data entity; usually its
+previous value.
+
+
+
+
+
+
+
+
+
+
+
+Temporary
+
+
+A data entity holding some value for a very short time only.
+
+
+
+
+Procedural example:
+
+
+The variable temp is a temporary
+in the following program:
+
+
+
+program bubbleSort;
+var i, j, temp: integer;
+    a: array [1..10] of integer;
+begin
+    for i := 1 to 10 do begin
+        write('Enter number: '); readln(a[i]);
+    end;
+    for i := 1 to 9 do
+        for j := i+1 to 10 do
+            if a[i]  a[j] then begin
+                temp := a[i];
+                a[i] := a[j];
+                a[j] := temp
+            end;
+    for i := 1 to 10 do writeln(a[i])
+end.
+
+
+
+(All roles in the program:
+i - stepper |
+j - stepper |
+temp - temporary |
+a - organizer)
+
+
+
+
+Object-oriented example:
+
+
+The variable tax is a temporary in the following class:
+
+public class Item {
+   float taxfreePrice, priceWithTax;
+   public Item (float price) { 
+       taxfreePrice = price;
+   }
+   public float setTax (float taxRate) { 
+      float tax;
+      tax = taxRate * taxfreePrice / 100;
+      priceWithTax = taxfreePrice + tax;
+      return tax;
+   }
+}
+ 
+
+
+(All roles in the class:
+taxfreePrice - fixed value |
+priceWithTax - most-recent holder |
+price - fixed value |
+taxRate - fixed value |
+tax - temporary)
+
+
+
+
+Examples of use:
+
+
+ To swap two data entities
+(cf. full program example above).
+
+ To hold the result of a computation used several times in
+consecutive statements.
+
+ To hold an input during error checking.
+
+
+
+
+Notes:
+
+
+ There are two distinct use types for temporaries: (i) those
+assigned with an expression that could be used in place of the
+variable but the variable is used for clarity or efficiency;
+(ii) those assigned with the value of another data entity
+for intermediate storage.
+
+ Occurs often together with an organizer (use type (ii) above).
+
+
+
+
+
+
+Technical definition:
+
+
+
+A data entity holding the value of some other data entity, input
+value, or the result of a computation for a very short time only,
+usually for efficiency reasons (e.g., executing a computation, whose
+value is needed in several places, only once), to clarify the program
+(e.g., computing the result in a variable even though the use of a
+variable would not be absolutely necessary), or for intermediate
+storage (e.g, in a swap operation).
+
+
+
+
+Properties:
+
+
+ Exists for short time periods only.
+
+ Tightly connected to the values of other data entities
+or input just read.
+
+
+
+
+
+
+
+
+
+
+
+Other
+
+
+Any other data entity.
+
+
+
+
+Procedural example:
+
+
+ not provided
+
+
+
+Object-oriented example:
+
+
+ not provided
+
+
+
+Examples of use:
+
+
+ To provide complicated data entity behaviour, e.g., to keep
+track of the next tab position in tab expansion.
+
+
+
+
+Notes:
+
+
+ This role only exists to provide some role for every
+data entity.
+
+
+
+
+
+
+Technical definition:
+
+
+
+All other data entities.
+
+
+
+
+Properties:
+
+
+ No fixed properties.
+
+ Actual need is rare in novice-level programs.
+
+
+
+
+
+
+
+Last updated: February 8, 2006
+
+saja.fi@gmail.com
+
+

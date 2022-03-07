@@ -73,15 +73,17 @@ def hourly_report(file):
     for data in file:
         for date in data:
             if date != "":
-                hour = dt.datetime.strftime(date, "%H")
+                # hour = dt.datetime.strftime(date, "%H")
+                hour = str(date.hour)
+                # print(date.hour)
                 if hour not in hourly_dict:
                     hourly_dict[hour] = 0
                 if hour in hourly_dict:
-                    hourly_dict[dt.datetime.strftime(date, "%H")] += 1
+                    hourly_dict[hour] += 1
                     total_counter += 1
 
     hourly_dict = dict(sorted(hourly_dict.items(), key=lambda x: int(x[0])))    # No idea why pycharm gives warning here
-    print(hourly_dict)
+    # print(hourly_dict)
     hourly_dict["Yhteensä"] = total_counter
 
     return hourly_dict
@@ -89,15 +91,24 @@ def hourly_report(file):
 
 def daily_reports_one_week(file, start_time):
     start_time = dt.datetime.strptime(start_time, "%d.%m.%Y %H:%M")
-    next_day = start_time + dt.timedelta(days=1)
-    daily_dict = {k:0 for k, v in range(7)}
+    timedelta = 1
+    next_day = start_time + dt.timedelta(days=timedelta)
+    daily_dict = {k: 0 for k, v in enumerate(range(7))}
     total_counter = 0
+    day = 0
 
-    for data in file:   # Checking one day
-        for date in data:
-            if start_time <= date <= next_day:
+    for day in range(len(daily_dict)):  # Going over each day for one week
+        for data in file:   # Checking one day
+            for date in data:
+                if date != "" and start_time <= date <= next_day:
+                    daily_dict[timedelta - 1 + day] += 1
+                    total_counter += 1
+        start_time = start_time + dt.timedelta(days=timedelta)
+        next_day = start_time + dt.timedelta(days=timedelta)
+        day += 1
 
-
+    daily_dict["Yhteensä"] = total_counter
+    return daily_dict
 
 
 if __name__ == '__main__':

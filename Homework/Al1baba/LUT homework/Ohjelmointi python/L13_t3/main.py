@@ -28,6 +28,7 @@ def main():
 
         elif decision == 4:
             start_time = input("Anna palautusjakson alkuaika [dd.mm.yyyy hh:mm]: ")
+            # start_time = "21.9.2018 06:00"
             print(";Palautuksia ajanjaksolla")
             daily_week_data = lib.daily_reports_one_week(file_data, start_time)
             lib.print_data(daily_week_data)
